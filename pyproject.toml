@@ -1,0 +1,7 @@
+[project]
+name = "cs-ai"
+version = "0.1.0"
+description = "This is a repostiory for CS-4013/5013 Aritificial Itelligence course at the University of Oklahoma"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
