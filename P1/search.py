@@ -81,12 +81,26 @@ def depthFirstSearch(problem: SearchProblem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
+ 
+    visited = set()                            #instantiate a set that holds the nodes visited (keeps the algorithms from getting stuck in cycles)
+    fringe = util.Stack()                           #instantiate a stack that will be used iterate through the the search problem 
+    fringe.push((problem.getStartState(), []))      #adds initial values into the stack that holds tuples (A, [])
+
+    while not fringe.isEmpty():                     #configues a loop that will run untill we have popped all items in the stack. This makes sure that we check each subnode of node A and so on.
+
+        node, actions = fringe.pop()                #we destructure the tuple into it's two values. The node and the actions that led to that node.
+
+        if problem.isGoalState(node):               #checks if the search algorithms has reached a goal state
+            return actions
+
+        if node not in visited:                     #checks if the node has been visited before
+            visited.add(node)                       #adds the node to the visited set
+
+            for cn, cn_action, cn_cost in problem.getSuccessors(node):      #for the node that we haven't visited we get the sucessors of that node and we iterate through it while breaking the values into cn: child node value, child node actions and child node cost
+                if cn not in visited:                                       #checks if we have visited that subnode
+                    fringe.push((cn, actions + [cn_action]))                #pushes into the fringe a tuple which includes the node and actions that led to the previous node plus the actions that leads to that subnode
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
