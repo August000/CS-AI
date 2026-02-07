@@ -130,27 +130,41 @@ def breadthFirstSearch(problem: SearchProblem):
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
+    start_state = problem.getStartState() # Get start state
     
-    visited = set()                           
-    fringe = util.PriorityQueue()                           
-    fringe.push((problem.getStartState(), [], 0), 0) 
+    # Check if we start at goal state 
+    if problem.isGoalState(start_state): 
+        return []
 
-    while not fringe.isEmpty():    
+    frontier = util.PriorityQueue()  # Priority queue to store frontier states
+    frontier.push((start_state, [], 0), 0) # Push start state into the frontier (current state, path taken, cost to this point)
+    lowest_cost = {start_state: 0} # Dictionary to record lowest cost to given state
 
-        node, actions, total_cost = fringe.pop()                
+    # loop through frontier until empty
+    while not frontier.isEmpty():
+        state, actions, cost_so_far = frontier.pop() # pop state with lowest cost
 
-        if problem.isGoalState(node):               
+        # check if path is cheapest way to state, skip if not
+        if cost_so_far != lowest_cost.get(state, float("inf")):
+            continue
+
+        # If goal reached, return path
+        if problem.isGoalState(state):
             return actions
 
-        if node not in visited:                     
-            visited.add(node)                        
+        # check successors of current state
+        for successor, action, action_cost in problem.getSuccessors(state):
+            new_cost = cost_so_far + action_cost
 
-            for cn, cn_action, cn_cost in problem.getSuccessors(node): 
-                if cn not in visited:
-                    updated_cost =  cn_cost + total_cost                                 
-                    fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
+            # If this new path is cheapest to the successor, update lowest_cost and add to frontier
+            if new_cost < lowest_cost.get(successor, float("inf")):
+                lowest_cost[successor] = new_cost
+                frontier.push((successor, actions + [action], new_cost), new_cost)
 
+    # no path to a goal found
     return []
+
+
 
 
 def nullHeuristic(state, problem=None):
@@ -160,29 +174,42 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic): #similar to ucs but with hueristic
     """Search the node that has the lowest combined cost and heuristic first."""
+    start_state = problem.getStartState() # Get start state
     
-    visited = set()                           
-    fringe = util.PriorityQueueWithFunction()                           
-    fringe.push((problem.getStartState(), [], 0), 0) 
+    # Check if we start at goal state 
+    if problem.isGoalState(start_state): 
+        return []
 
-    while not fringe.isEmpty():    
+    frontier = util.PriorityQueue()  # Priority queue to store frontier states
+    frontier.push((start_state, [], 0), 0 + heuristic(start_state, problem)) # For A* the priority index will be g+h (g=0 for start state)
+    lowest_cost = {start_state: 0} # Dictionary to record lowest cost to given state
 
-        node, actions, total_cost = fringe.pop()                
+    # loop through frontier until empty
+    while not frontier.isEmpty():
+        state, actions, cost_so_far = frontier.pop() # pop state with lowest cost
 
-        if problem.isGoalState(node):               
+        # check if path is cheapest way to state, skip if not
+        if cost_so_far != lowest_cost.get(state, float("inf")):
+            continue
+
+        # If goal reached, return path
+        if problem.isGoalState(state):
             return actions
 
-        if node not in visited:                     
-            visited.add(node)                        
+        # check successors of current state
+        for successor, action, action_cost in problem.getSuccessors(state):
+            new_cost = cost_so_far + action_cost
 
-            for cn, cn_action, cn_cost in problem.getSuccessors(node): 
-                if cn not in visited:
-                    updated_cost =  cn_cost + total_cost                                 
-                    fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
+            # If this new path is cheapest to the successor, update lowest_cost and add to frontier
+            if new_cost < lowest_cost.get(successor, float("inf")):
+                lowest_cost[successor] = new_cost
+                frontier.push((successor, actions + [action], new_cost), new_cost + heuristic(successor, problem))
 
+    # no path to a goal found
     return []
+
 
 
 # Abbreviations
