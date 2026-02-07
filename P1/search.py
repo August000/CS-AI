@@ -101,7 +101,8 @@ def depthFirstSearch(problem: SearchProblem):
                 if cn not in visited:                                       #checks if we have visited that subnode
                     fringe.push((cn, actions + [cn_action]))                #pushes into the fringe a tuple which includes the node and actions that led to the previous node plus the actions that leads to that subnode
 
-    util.raiseNotDefined()
+    return []
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
@@ -124,7 +125,8 @@ def breadthFirstSearch(problem: SearchProblem):
                 if cn not in visited:                                       #checks if we have visited that subnode
                     fringe.push((cn, actions + [cn_action]))                #pushes into the fringe a tuple which includes the node and actions that led to the previous node plus the actions that leads to that subnode
 
-    util.raiseNotDefined()
+    return []
+
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
@@ -148,7 +150,8 @@ def uniformCostSearch(problem: SearchProblem):
                     updated_cost =  cn_cost + total_cost                                 
                     fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
 
-    util.raiseNotDefined()
+    return []
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -180,6 +183,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
                     fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
 
     util.raiseNotDefined()
+    return []
 
 
 # Abbreviations
