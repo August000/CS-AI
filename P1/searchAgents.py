@@ -296,14 +296,23 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        start = self.startingPosition 
+        visited_corners = [False, False, False, False] # list that tracks if given corner as been visited
+
+        for i in range(len(self.corners)): # Check if we start in a corner, set to visitied if so
+            if start == self.corners[i]:
+                visited_corners[i] = True
+        visited_corners = tuple(visited_corners) # convert to tuple so it can be used as part of a state in the search problem
+
+        return (start, visited_corners)
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        pos, visited_corners = state
+        return all(visited_corners) # true if all corners are visted
 
     def getSuccessors(self, state: Any):
         """
@@ -326,6 +335,23 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            (x, y), visited_corners = state
+
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+
+            # If it doesn't hit wall, add it as a successor
+            if not hitsWall:
+                next_position = (nextx, nexty)
+                next_visited = list(visited_corners) # list of visited corners we can update
+
+                # If the next position is a corner, mark it visited
+                for i, corner in enumerate(self.corners):
+                    if next_position == corner:
+                        next_visited[i] = True
+
+                successors.append(((next_position, tuple(next_visited)) , action, 1)) # append successor with cost=1
 
         self._expanded += 1 # DO NOT CHANGE
         return successors

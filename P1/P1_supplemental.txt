@@ -9,17 +9,38 @@ Answer: Yes, the exploration consist of subnodes that were explored earlier by t
 QS2.1:
 
 
-QS3.1:
+QS3.1:  What cost function did you use?  Please briefly describe how your cost function is designed (what factors does it consider and how heavy of a weight has each factor considered been given?)
+The cost function used when running the "python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs" will be the default defined by SearchAgent. 
+This is defined by "costFn = lambda x: 1", and this means that for every move the cost is one no matter what. 
+By contrast, StayEastSearchAgent defines a cost function of "costFn = lambda pos: 0.5 ** pos[0]", meaning that it considers the x position value when deciding the cost. 
+In this case, the cost of a move is 0.5^x_pos, so moves that are on the east side of the board(positive x direction) are much cheaper.
+In the case of StayWestSearchAgent, which defines "costFn = lambda pos: 2 ** pos[0]", the cost of a move is 2^x_pos.
+This means that in this case, moves on the east side of the board(positive x direction) are much more expensive.
+
+QS4.1: What is the difference between the nullHeuristic  and the Manhattan distance heuristic? Does nullHeuristic give the optimal solution?  Why is the Manhattan distance heuristic better?
+The nullHeuristic will always return 0, so it isn't giving us any extra info past what we were using for UCS. Thus, the algorithim will still find the optimal solution using nullHeuristic but will behave just like UCS would.
+By contrast, the Manhattan distance heuristic will actually provide information on how close the node is to the goal state, which will allow it to more optimally choose nodes to expand.
+This helps us explain why the Manhattan distance heuristic is better than the nullHeuristic. They will both find the optimal solution, but the Manhattan distance heuristic will find it while expanding less nodes.
+
+QS4.2: What happens on openMaze for the various search strategies?
+DFS finds a very long path that goes back and forth row by row until it finds the goal. 
+BFS, UCS, and A*(with Manhattan) all find the same optimal path which goes left for a period until it's past a blocker, then goes down to the bottom and continues left until it reaches the goal in the bottom left side. 
+However, while BFS and UCS both expand 682 nodes, A* is able to find the path while only expanding 535 nodes.
 
 
-
-QS4.1:
-
-
-QS5.1:
+QS5.1: What states representation do you choose in this problem?
+I chose ((x,y), (a,b,c,d)) as a state representation, where (x,y) denotes the position of the agent and (a,b,c,d) is a tuple of booleans denoting if a given corner has been visited.
 
 
-QS5.2:
+QS5.2: Briefly explain your implementation
+getStartState gets the starting position and initializes a list of Boolean values indicating if each of the 4 corners has been visited.  
+Then it checks if the start state is in a corner and marks it as visited if so. Then it turns it into a tuple and joins it with the position to return the start state (start, visited_corners). 
+
+isGoalState takes the current state and returns true if all 4 of the corners have been visited(all 4 boolean values in visited_corners are true), returns false otherwise.
+
+getSuccessors loops through each of the directions that the agent could travel. 
+If a move in the given direction doesn't lead into a wall, it updates the visited_corners list(if the next node is a corner) and then adds the next state to the successor list with a cost of 1.
+After going through all potential moves, the successor list is returned.
 
 
 QS6.1:
