@@ -128,7 +128,26 @@ def breadthFirstSearch(problem: SearchProblem):
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    
+    visited = set()                           
+    fringe = util.PriorityQueue()                           
+    fringe.push((problem.getStartState(), [], 0), 0) 
+
+    while not fringe.isEmpty():    
+
+        node, actions, total_cost = fringe.pop()                
+
+        if problem.isGoalState(node):               
+            return actions
+
+        if node not in visited:                     
+            visited.add(node)                        
+
+            for cn, cn_action, cn_cost in problem.getSuccessors(node): 
+                if cn not in visited:
+                    updated_cost =  cn_cost + total_cost                                 
+                    fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -140,7 +159,26 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
+    
+    visited = set()                           
+    fringe = util.PriorityQueueWithFunction()                           
+    fringe.push((problem.getStartState(), [], 0), 0) 
+
+    while not fringe.isEmpty():    
+
+        node, actions, total_cost = fringe.pop()                
+
+        if problem.isGoalState(node):               
+            return actions
+
+        if node not in visited:                     
+            visited.add(node)                        
+
+            for cn, cn_action, cn_cost in problem.getSuccessors(node): 
+                if cn not in visited:
+                    updated_cost =  cn_cost + total_cost                                 
+                    fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
+
     util.raiseNotDefined()
 
 
