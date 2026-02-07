@@ -105,7 +105,25 @@ def depthFirstSearch(problem: SearchProblem):
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+   
+    visited = set()                            #instantiate a set that holds the nodes visited (keeps the algorithms from getting stuck in cycles)
+    fringe = util.Queue()                           #instantiate a queue that will be used iterate through the the search problem 
+    fringe.push((problem.getStartState(), []))      #adds initial values into the queue that holds tuples (A, [])
+
+    while not fringe.isEmpty():                     #configues a loop that will run untill we have popped all items in the queue. This makes sure that we check each subnode in layered order going into the nodes of the superficial layers first.
+
+        node, actions = fringe.pop()                #we destructure the tuple into it's two values. The node and the actions that led to that node.
+
+        if problem.isGoalState(node):               #checks if the search algorithms has reached a goal state
+            return actions
+
+        if node not in visited:                     #checks if the node has been visited before
+            visited.add(node)                       #adds the node to the visited set
+
+            for cn, cn_action, cn_cost in problem.getSuccessors(node):      #for the node that we haven't visited we get the sucessors of that node and we iterate through it while breaking the values into cn: child node value, child node actions and child node cost
+                if cn not in visited:                                       #checks if we have visited that subnode
+                    fringe.push((cn, actions + [cn_action]))                #pushes into the fringe a tuple which includes the node and actions that led to the previous node plus the actions that leads to that subnode
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
