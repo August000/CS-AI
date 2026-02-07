@@ -1,10 +1,10 @@
 Answer questions marked as "QS"
 
-QS1.1:
+QS1.1: What data structure do you use for implementing DFS? Why?
+Answer: In DFS serch alogoithm you use a stack so that you can add elements to the fringe and iterate through them using a while loop until the fringe is empty
 
-
-QS1.2:
-
+QS1.2: The Pacman board will show an overlay of the states explored, and the order in which they were explored (brighter red means earlier exploration). Is the exploration order what you would have expected? Does Pacman actually go to all the explored squares on his way to the goal?
+Answer: Yes, the exploration consist of subnodes that were explored earlier by the algorithm, however, they might lead of a dead end that leads to the exploration of another nodes. The behavior of the pacman is expected to go directly to the goal since we are not returning the nodes itself for the pacman, we are returing the first result of actions that lead to the goal and not all the explore nodes. 
 
 QS2.1:
 
