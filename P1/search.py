@@ -182,7 +182,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
                     updated_cost =  cn_cost + total_cost                                 
                     fringe.push((cn, actions + [cn_action], updated_cost), updated_cost)      
 
-    util.raiseNotDefined()
     return []
 
 
