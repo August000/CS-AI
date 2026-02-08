@@ -330,13 +330,11 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   
-                x,y = state
-                dx, dy = Actions.directionToVector(action)
-                nextx, nexty = int(x + dx), int(y + dy)
-                hitsWall = self.walls[nextx][nexty]
+            #   x, y = state
+            #   dx, dy = Actions.directionToVector(action)
+            #   nextx, nexty = int(x + dx), int(y + dy)
+            #   hitsWall = self.walls[nextx][nexty]
 
-            "*** YOUR CODE HERE ***"
             (x, y), visited_corners = state
 
             dx, dy = Actions.directionToVector(action)
@@ -388,10 +386,15 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
+    pos, visited = state
+ 
+    x,y = pos
+ 
     distances = []
 
     for corner in corners: 
-        distances.append(abs(state[0] - corner[0]) + abs(state[1] - corner[1]))
+
+        distances.append(abs(x - corner[0]) + abs(y - corner[1]))
 
     return min(distances)
 
@@ -487,7 +490,23 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    foodList = foodGrid.asList()
+
+    # find distance from pacman to farthest food dot
+    farthest_food = None
+    farthest_dist = 0
+
+    for food_dot in foodList:
+        dist = abs(position[0] - food_dot[0]) + abs(position[1] - food_dot[1]) # manhattan distance from pacman to food
+        if dist > farthest_dist:
+            farthest_dist = dist
+            farthest_food = food_dot
+    dist_from_pac = farthest_dist
+
+    # return distance from pacman to farthest food
+    return dist_from_pac
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
