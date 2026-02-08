@@ -487,7 +487,23 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    foodList = foodGrid.asList()
+
+    # find distance from pacman to farthest food dot
+    farthest_food = None
+    farthest_dist = 0
+
+    for food_dot in foodList:
+        dist = abs(position[0] - food_dot[0]) + abs(position[1] - food_dot[1]) # manhattan distance from pacman to food
+        if dist > farthest_dist:
+            farthest_dist = dist
+            farthest_food = food_dot
+    dist_from_pac = farthest_dist
+
+    # return distance from pacman to farthest food
+    return dist_from_pac
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
