@@ -46,4 +46,13 @@ After going through all potential moves, the successor list is returned.
 QS6.1:
 
 
-QS7.1:
+QS7.1: What heuristic did you use for this problem?  Explain the potential strong points and weak points of your chosen heuristic.  Is your heuristic consistent?  Why?
+Our UCS agent finds the optimal solution in about 13 seconds, exploring over 16,000 nodes.
+ 
+The heuristic we used simply calculated the Manhattan distance between pacman's position and the farthest food dot. 
+This works well because we know that the agent will at the very least have to travel as far as the farthest dot away from itself. 
+If there are other dots which are out of the way, that can only make the cost greater and thus our algorithm cannot overestimate the cost. 
+This means that our algorithm is admissible. Furthermore, we also know it's consistent because the heuristic can change by at-most 1 for 1 step.
+This allowed us to reduce the amount of nodes we had to expand significantly(9,551 vs 16,000 for UCS).
+Though, it also isn't the tightest heuristic and can sometimes drastically underestimate the cost. 
+For example, a very crowded environment with a bunch of dots in different directions all within a similar distance range to pacman would have a heuristic value that would be much less than the actual cost.
