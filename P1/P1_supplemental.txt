@@ -6,7 +6,7 @@ Answer: In DFS serch alogoithm you use a stack so that you can add elements to t
 QS1.2: The Pacman board will show an overlay of the states explored, and the order in which they were explored (brighter red means earlier exploration). Is the exploration order what you would have expected? Does Pacman actually go to all the explored squares on his way to the goal?
 Answer: Yes, the exploration consist of subnodes that were explored earlier by the algorithm, however, they might lead of a dead end that leads to the exploration of another nodes. The behavior of the pacman is expected to go directly to the goal since we are not returning the nodes itself for the pacman, we are returing the first result of actions that lead to the goal and not all the explore nodes. 
 
-QS2.1:
+QS2.1: What data structure do you use for implementing BFS? Why?
 
 
 QS3.1:  What cost function did you use?  Please briefly describe how your cost function is designed (what factors does it consider and how heavy of a weight has each factor considered been given?)
@@ -43,7 +43,9 @@ If a move in the given direction doesn't lead into a wall, it updates the visite
 After going through all potential moves, the successor list is returned.
 
 
-QS6.1:
+QS6.1: What heuristic did you use for this corner problem?  Explain the potential strong points and weak points of your chosen heuristic.  Is your heuristic consistent?  Why?
+
+
 
 
 QS7.1: What heuristic did you use for this problem?  Explain the potential strong points and weak points of your chosen heuristic.  Is your heuristic consistent?  Why?
@@ -57,3 +59,4 @@ This allowed us to reduce the amount of nodes we had to expand significantly(9,5
 Though, it also isn't the tightest heuristic and can sometimes drastically underestimate the cost. 
 For example, a very crowded environment with a bunch of dots in different directions all within a similar distance range to pacman would have a heuristic value that would be much less than the actual cost.
 
+QS8.1: Describe your solution and explain the potential strong points and weak points of your solution.
