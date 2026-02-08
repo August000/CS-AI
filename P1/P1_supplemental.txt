@@ -6,7 +6,9 @@ Answer: In DFS serch alogoithm you use a stack so that you can add elements to t
 QS1.2: The Pacman board will show an overlay of the states explored, and the order in which they were explored (brighter red means earlier exploration). Is the exploration order what you would have expected? Does Pacman actually go to all the explored squares on his way to the goal?
 Answer: Yes, the exploration consist of subnodes that were explored earlier by the algorithm, however, they might lead of a dead end that leads to the exploration of another nodes. The behavior of the pacman is expected to go directly to the goal since we are not returning the nodes itself for the pacman, we are returing the first result of actions that lead to the goal and not all the explore nodes. 
 
-QS2.1: What data structure do you use for implementing BFS? Why?
+QS2.1: What data structure do you use for implementing BFS? Why? 
+Answer: In the BFS implementation the data structure used was a queue. Unilke the stack where we have a FILO (first in last out) the queue works FIFO (first in first out). Therefore, when we use a queue it allows for the first element of the fringe to be expanded and then the second one and so forth.
+This allows the fringe to pop elements and add them to visited nodes in order instead of going deeper into a node. Example: if the successors of A are B, C and D it will add B,C and D to the queue, so the first element popped i A then B then C then D, then it proceeds to the subnodes of B , C and D.
 
 
 QS3.1:  What cost function did you use?  Please briefly describe how your cost function is designed (what factors does it consider and how heavy of a weight has each factor considered been given?)
@@ -44,6 +46,9 @@ After going through all potential moves, the successor list is returned.
 
 
 QS6.1: What heuristic did you use for this corner problem?  Explain the potential strong points and weak points of your chosen heuristic.  Is your heuristic consistent?  Why?
+Answer: The heuristic used for this problem was the maximum Manhattan distance from the unvisited nodes list, this heuristic allows for the search of the furthers node first then going for the others nodes in unvisited list. 
+This heuristic is admissible since it will never overestimate the goal, this is the heuristic is the minimum value possible for every point is the 2D plane. This heuristic is consistent since each move has a cost of one even with walls.
+Some of the weak points is that it goes for the furthest node, that really doesn't consider the other nodes or best order for visiting them, this could definitely be imporved upon to get a better path to reach all unvisited nodes.
 
 
 
@@ -60,3 +65,6 @@ Though, it also isn't the tightest heuristic and can sometimes drastically under
 For example, a very crowded environment with a bunch of dots in different directions all within a similar distance range to pacman would have a heuristic value that would be much less than the actual cost.
 
 QS8.1: Describe your solution and explain the potential strong points and weak points of your solution.
+Answer: Them implementation of the solution for Q8 is simple and reuses PositionSearchProblem and BFS. However, this strategy is greedy and isn't optimzed for finding the closest food 
+to the pacman which can lead to suboptimal actions to for the shortest path to the food. For example if pacman is already on a path that has food one distance more then some food behind it 
+will turn and get the food behind it when the optimal path might be one that goes straight a gets a lot more food then passes through that same node but with a delay.
