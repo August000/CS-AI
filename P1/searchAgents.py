@@ -34,7 +34,6 @@ description for details.
 Good luck and happy searching!
 """
 
-from turtle import distance
 from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
