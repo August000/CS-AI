@@ -330,13 +330,11 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   
-                x,y = state
-                dx, dy = Actions.directionToVector(action)
-                nextx, nexty = int(x + dx), int(y + dy)
-                hitsWall = self.walls[nextx][nexty]
+            #   x, y = state
+            #   dx, dy = Actions.directionToVector(action)
+            #   nextx, nexty = int(x + dx), int(y + dy)
+            #   hitsWall = self.walls[nextx][nexty]
 
-            "*** YOUR CODE HERE ***"
             (x, y), visited_corners = state
 
             dx, dy = Actions.directionToVector(action)
@@ -388,12 +386,24 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    distances = []
-
-    for corner in corners: 
-        distances.append(abs(state[0] - corner[0]) + abs(state[1] - corner[1]))
-
-    return min(distances)
+    pos, visited = state
+    x, y = pos
+ 
+    # unvisited corners
+    unvisited = []
+ 
+    for i in range(4): # add unvisited corners to list
+        if not visited[i]:
+            unvisited.append(corners[i])
+ 
+    if unvisited == []: # no unvisited corners, heuristic is 0
+        return 0
+ 
+    distances = [] # distances to unvisted corners
+    for coords in unvisited:
+        distances.append(abs(x - coords[0]) + abs(y - coords[1])) # manhattan distance from position to each unvisited corner
+ 
+    return max(distances) # return distance to fartherest unvisited corner
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -533,8 +543,7 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -569,8 +578,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         """
         x,y = state
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.food[x][y]
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
