@@ -75,7 +75,30 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        score = successorGameState.getScore()
+
+        # go to closest food
+        foodList = newFood.asList()
+        if foodList != []:
+            closestFoodDist = float('inf')
+            for food in foodList: # find the closest food
+                if manhattanDistance(newPos, food) < closestFoodDist:
+                    closestFoodDist = manhattanDistance(newPos, food)
+            if closestFoodDist != 0:
+                score += 1.0/closestFoodDist # closer food gives more reward
+
+        # Avoid ghosts, unless they're scared
+        for i, ghostState in enumerate(newGhostStates):
+            ghostDist = manhattanDistance(newPos, ghostState.getPosition())
+            if newScaredTimes[i] == 0: # avoid non-scared ghosts
+                if ghostDist <= 1:
+                    score -= 10
+                elif ghostDist == 2:
+                    score -= 1
+            else: # chase scared ghosts
+                if ghostDist <= 1:
+                    score += 5
+        return score
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -136,7 +159,53 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # helper function to find the value of a state using minimax alg, uses recurisive calls to find values of child states and then picks the best one
+        def minimax(state: GameState, agentIndex: int, depth: int):
+            # terminal conditions
+            if state.isWin(): # stop if we win
+                return self.evaluationFunction(state)
+            elif state.isLose(): # stop if we lose
+                return self.evaluationFunction(state)
+            elif depth == self.depth: # stop if we reach max depth
+                return self.evaluationFunction(state)
+            
+            # Pacman maximizes
+            if agentIndex == 0: #pacman index is 0
+                maxValue = -float("inf")
+
+                # loop through actions and find the best one(max one) for pacman
+                for action in state.getLegalActions(agentIndex):
+                    successorState = state.generateSuccessor(agentIndex, action)
+                    value = minimax(successorState, 1, depth) # find value of successor state for first ghost
+                    if value > maxValue: 
+                        maxValue = value
+                return maxValue # return the best value found for pacman
+            
+            else: # Ghosts minimize
+                minValue = float("inf")
+
+                for action in state.getLegalActions(agentIndex): # Loop through actions and find the best one(min one) for ghost 
+                    successorState = state.generateSuccessor(agentIndex, action)
+
+                    if agentIndex + 1 == state.getNumAgents(): # out of ghosts, so go back to pacman and increase depth
+                        value = minimax(successorState, 0, depth + 1)
+                    else:
+                        value = minimax(successorState, agentIndex + 1, depth) # find value of successor state for the next ghost
+                    if value < minValue:
+                        minValue = value
+                return minValue # return the best value found for ghost
+
+        # Choose best action for Pacman at the current state
+        bestAction = Directions.STOP # default to stop
+        maxVal = -float("inf") # default to -infinity
+
+        for action in gameState.getLegalActions(0): # loop through actions and find best one
+            value = minimax(gameState.generateSuccessor(0, action), 1, 0)
+            if value > maxVal: # new max found, update best value and action
+                maxVal = value 
+                bestAction = action
+
+        return bestAction
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
