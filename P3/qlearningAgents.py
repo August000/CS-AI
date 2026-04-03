@@ -116,7 +116,13 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if len(legalActions) == 0:  # if no actions to take, return None
+            return None
+
+        if util.flipCoin(self.epsilon): # epsilon chance to take random action, otherwise follow current policy
+            action = random.choice(legalActions)
+        else:
+            action = self.computeActionFromQValues(state)
 
         return action
 
