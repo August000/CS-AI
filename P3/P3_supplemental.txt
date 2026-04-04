@@ -7,7 +7,7 @@
 Answer the supplemental questions here! Make sure you follow the format if it is asked
 Q1#######################
 QS1.1:
-In computeActionFromValues, I first get all the legal actions for the given state using
+In computeActionFromValues, I initally get all the legal actions for the given state using
 self.mdp.getPossibleActions(state). If there are no legal actions (like at a terminal state),
 I return None. Otherwise, I loop through all the actions and find the one that gives the
 highest Q-value by calling computeQValueFromValues for each action. I used Python's max()
