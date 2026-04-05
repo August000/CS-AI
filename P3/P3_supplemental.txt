@@ -51,3 +51,74 @@ Here's the link to the crawler robot video:
 https://drive.google.com/file/d/1OnlculMHmhPDCqPQUWuO7Mwe0HuHtSZb/view?usp=sharing 
 
 You can see the robot is clearly working as intended, making forward progress, indicating that our implementation is successful.
+
+######################
+# Supplemental Questions #
+######################
+
+
+Answer the supplemental questions here! Make sure you follow the format if it is asked
+Q1#######################
+QS1.1:
+In computeActionFromValues, I initally get all the legal actions for the given state using
+self.mdp.getPossibleActions(state). If there are no legal actions (like at a terminal state),
+I return None. Otherwise, I loop through all the actions and find the one that gives the
+highest Q-value by calling computeQValueFromValues for each action. I used Python's max()
+function with a key that computes the Q-value for each action, so it returns the action
+with the best expected value. This is basically implementing the policy: pick the action
+that maximizes the expected utility from the current state.
+
+QS1.2:
+For computeQValueFromValues, I compute Q(s, a) using the Bellman equation. I go through
+all the possible next states and their transition probabilities by calling
+self.mdp.getTransitionStatesAndProbs(state, action). For each (nextState, prob) pair, I get
+the reward R(s, a, s') and then calculate prob * (reward + discount * V(s')), where V(s')
+is the value of the next state stored in self.values. I sum all of these up to get the
+final Q-value. So basically each transition contributes its probability times the immediate
+reward plus the discounted future value.
+
+Q3#######################
+
+QS3.1:
+For 3a (close exit, risk cliff), I used discount=0.2, noise=0.0, livingReward=0.0. The low
+discount means the agent doesn't care much about rewards far in the future, so the close
++1 exit looks better than the distant +10. For example, with discount=0.2, the +10 exit
+that's 5 steps away is only worth about 0.2^5 * 10 = 0.00032 at the start, while +1
+that's 3 steps away is worth 0.2^3 * 1 = 0.008, which is way more. Noise=0 means there's
+no chance of slipping into the cliff, so walking along the bottom row is safe.
+
+For 3b (close exit, avoid cliff), I used discount=0.3, noise=0.2, livingReward=-0.5. The
+noise=0.2 makes the cliff dangerous because there's a 10% chance of slipping sideways
+into the -10 states when walking along the bottom row. The negative living reward pushes
+the agent to reach an exit quickly rather than wandering, and the low discount still makes
+the close +1 exit more attractive than the far +10. So the agent takes the safe path
+around the top to reach +1.
+
+For 3c (distant exit, risk cliff), I used discount=0.9, noise=0.0, livingReward=0.0. The
+high discount means future rewards keep most of their value, so +10 far away is still
+worth a lot more than +1 nearby. With noise=0, walking along the bottom row next to the
+cliff is perfectly safe, so the agent just goes straight east along the bottom to reach +10.
+
+For 3d (distant exit, avoid cliff), I used discount=0.9, noise=0.2, livingReward=0.0. The
+high discount still makes the +10 exit more desirable than +1. But now noise=0.2 makes the
+cliff risky, so the agent goes north and takes the long safe path around the top of the
+grid to get to +10 without risking the -10 cliff.
+
+For 3e (avoid all exits), I used discount=0.9, noise=0.2, livingReward=11.0. With a living
+reward of +11 per step, the agent earns more by just staying alive than it would by exiting.
+Even the +10 exit can't compete with collecting +11 every single step, so the agent avoids
+all terminal states and just keeps moving around forever.
+
+Q5#######################
+
+QS5.1:
+
+QS5.2 [optional]:
+
+Q6#######################
+QS6.1:
+QS6.2 [optional]:
+
+
+
+
