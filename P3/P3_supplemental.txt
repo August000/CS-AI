@@ -12,54 +12,31 @@ Answer the supplemental questions here! Make sure you follow the format if it is
 Q1#######################
 
 QS1.1:
-In computeActionFromValues, I initally get all the legal actions for the given state using
-self.mdp.getPossibleActions(state). If there are no legal actions (like at a terminal state),
-I return None. Otherwise, I loop through all the actions and find the one that gives the
-highest Q-value by calling computeQValueFromValues for each action. I used Python's max()
-function with a key that computes the Q-value for each action, so it returns the action
-with the best expected value. This is basically implementing the policy: pick the action
-that maximizes the expected utility from the current state.
+For computeActionFromValues, I first get the legal actions for the current state using self.mdp.getPossibleActions(state). If there are no legal actions, then it is a terminal state, so I just return None. 
+Otherwise, I compare the Q-values for each possible action by calling computeQValueFromValues(state, action). I used Python's max() with a key so it can pick the action with the highest Q-value for me. So basically this function is just choosing the action that looks best based on the values my agent has already learned.
 
 QS1.2:
-For computeQValueFromValues, I compute Q(s, a) using the Bellman equation. I go through
-all the possible next states and their transition probabilities by calling
-self.mdp.getTransitionStatesAndProbs(state, action). For each (nextState, prob) pair, I get
-the reward R(s, a, s') and then calculate prob * (reward + discount * V(s')), where V(s')
-is the value of the next state stored in self.values. I sum all of these up to get the
-final Q-value. So basically each transition contributes its probability times the immediate
-reward plus the discounted future value.
+For computeQValueFromValues, I used the Bellman equation idea. I start qValue at 0, then I go through every possible next state and transition probability from self.mdp.getTransitionStatesAndProbs(state, action). For each transition, I get the reward
+with self.mdp.getReward(state, action, nextState), then add prob * (reward + self.discount * self.values[nextState]) to qValue. After summing all of those together, I get the full expected Q-value for taking that action in that state. So in simple terms, it is the immediate reward plus the discounted future value, weighted by how likely each transition is.
 
 Q3#######################
 
 QS3.1:
-For 3a (close exit, risk cliff), I used discount=0.2, noise=0.0, livingReward=0.0. The low
-discount means the agent doesn't care much about rewards far in the future, so the close
-+1 exit looks better than the distant +10. For example, with discount=0.2, the +10 exit
-that's 5 steps away is only worth about 0.2^5 * 10 = 0.00032 at the start, while +1
-that's 3 steps away is worth 0.2^3 * 1 = 0.008, which is way more. Noise=0 means there's
-no chance of slipping into the cliff, so walking along the bottom row is safe.
+For 3a (close exit, risk cliff), I used discount=0.2, noise=0.0, livingReward=0.0. I picked a low discount because I wanted the agent to care more about getting a reward soon than waiting for the far +10. Setting noise to 0 also matters, because that makes the path by the cliff safe enough that the agent will take the more direct route. 
+If I made the discount much higher, the far exit would start looking better.
 
-For 3b (close exit, avoid cliff), I used discount=0.3, noise=0.2, livingReward=-0.5. The
-noise=0.2 makes the cliff dangerous because there's a 10% chance of slipping sideways
-into the -10 states when walking along the bottom row. The negative living reward pushes
-the agent to reach an exit quickly rather than wandering, and the low discount still makes
-the close +1 exit more attractive than the far +10. So the agent takes the safe path
-around the top to reach +1.
+For 3b (close exit, avoid cliff), I used discount=0.3, noise=0.2, livingReward=-0.5. 
+Here I still wanted the close exit, so I kept the discount low. But I raised the noise so moving next to the cliff became risky, which pushes the agent toward the safer path. 
+I also used a negative living reward so the agent still wants to finish instead of wandering around too long. If thenoise were 0 here, the agent would probably just hug the cliff again.
 
-For 3c (distant exit, risk cliff), I used discount=0.9, noise=0.0, livingReward=0.0. The
-high discount means future rewards keep most of their value, so +10 far away is still
-worth a lot more than +1 nearby. With noise=0, walking along the bottom row next to the
-cliff is perfectly safe, so the agent just goes straight east along the bottom to reach +10.
+For 3c (distant exit, risk cliff), I used discount=0.9, noise=0.0, livingReward=0.0. I picked a high discount so the far +10 keeps most of its value even though it takes longer to reach. Then I set noise to 0 so there is no penalty for taking the risky-looking path by the cliff.
+That combination makes the agent go for the bigger reward as directly as possible.
 
-For 3d (distant exit, avoid cliff), I used discount=0.9, noise=0.2, livingReward=0.0. The
-high discount still makes the +10 exit more desirable than +1. But now noise=0.2 makes the
-cliff risky, so the agent goes north and takes the long safe path around the top of the
-grid to get to +10 without risking the -10 cliff.
+For 3d (distant exit, avoid cliff), I used discount=0.9, noise=0.2, livingReward=0.0. I kept the high discount because I still wanted the far +10 to be worth it. The big difference is the noise, since that makes the cliff path dangerous enough that the agent prefers the longer safe
+route. So this one still goes for the far reward, just not by the dangerous path.
 
-For 3e (avoid all exits), I used discount=0.9, noise=0.2, livingReward=11.0. With a living
-reward of +11 per step, the agent earns more by just staying alive than it would by exiting.
-Even the +10 exit can't compete with collecting +11 every single step, so the agent avoids
-all terminal states and just keeps moving around forever.
+For 3e (avoid all exits), I used discount=0.9, noise=0.2, livingReward=11.0. The main thing here is the living reward. Since the agent gets +11 every step just for staying alive, that ends up being better than taking either exit, including the +10 one. Because of that, the
+agent keeps moving around and avoids terminal states instead of ending the episode.
 
 Q5#######################
 
