@@ -3,6 +3,59 @@
 # Supplemental Questions #
 ######################
 
+Group Members:
+Ryan Williams,
+Augusto de Oliveira Batista
+
+
+Answer the supplemental questions here! Make sure you follow the format if it is asked
+Q1#######################
+QS1.1: 
+
+QS1.2:
+
+Q3#######################
+
+QS3.1: 
+
+Q5#######################
+
+QS5.1: explain how you implemented your Q-learning agent.
+
+First I updated the init function to set the self.qvalues to an empty Counter(). This is like a dictionary but returns 0.0 for unseen pairs. 
+The getQValue function was also very simple. I simply return the q values at the given state action pair using "self.qValues[(state, action)]". 
+Next I implemented the computeValueFromQValues() function by looping through the legal actions(returning 0.0 if there are no legal actions), checking the q value for each state/action pair, and returning the maximum one. This is necessary for our observed q value calculation. 
+The computeActionFromQValues() function was similar in that it loops through the actions to find the best one, but instead of returning the best value, it tracks the best action(s)(stores multiple actions in a list if there are ties). Then, it returns one of the best actions(or the best action if only one) by randomly selecting between them using random.choice(). 
+Finally, we implemented the update() function, which is core to the Q learning algorithm. To do this, we pulled the current q value at the given state and found the max q value of the next state relative to action by calling computeValueFromQValues(nextState). We then calculated our observed q value by adding the reward to the discounted q value of the next state(which we just found). We then found the error between the observed and current q values by finding the difference. Then, we have everything we need for the final update rule. We add the current q value and the error(weighted by alpha) together to get our updated q value, which we store in self.qValues[(state, action)]. 
+This all together allows our Q-learning agent to store and update its q values over time.
+
+
+
+QS5.2 [optional]:
+
+
+Q6#######################
+QS6.1: You can also observe the following simulations for different epsilon values. Does that behavior of the agent match what you expect? Explain. 
+
+Yes, the observed behavior did match my expectations.
+For the low epsilon(epsilon=0.1), we would expect less random exploration and more path following based on policy. In our test run, we saw just that. The agent took a handful of iterations to find a successful path to the reward state, but once it found one it quickly started following almost that exact path repeatedly with only little variance. After reaching the goal state several times the pattern got even stronger. This resulted in the agent repeatedly finding the goal state and finding the converged q values on its found path, but ignoring other potential paths to the goals almost entirely. This meant that some of the states weren't visited much and therefore weren't ever able to reach a solid converted q value.
+By contrast, for the higher epsilon(epsilon=0.9), we would expect more random exploration. This is exactly what we saw. The agent never completely settled on a path and therefore fully explored all states, resulting in finding converges q values for all of them. This of course meant that it also wasn't reaching the goal state as often or as efficiently.
+These results go to show us the value in altering the epsilon value for different use cases. For example, low epsilon may be more useful if you want to find any goal path and build confidence in it quickly, or in cases where excess exploration or reaching failure states is costly. Whereas high epsilon may be preferable in cases where you want to explore all states as much as possible to fully flesh out your q values for any situation.
+
+
+
+
+QS6.2 [optional]: you should now be able to run a Q-learning crawler robot. Save the screen shot of the running crawler bot as a video and upload it in Google drive, share the link in P3_supplemental.txt
+
+Here's the link to the crawler robot video:
+https://drive.google.com/file/d/1OnlculMHmhPDCqPQUWuO7Mwe0HuHtSZb/view?usp=sharing 
+
+You can see the robot is clearly working as intended, making forward progress, indicating that our implementation is successful.
+
+######################
+# Supplemental Questions #
+######################
+
 
 Answer the supplemental questions here! Make sure you follow the format if it is asked
 Q1#######################
