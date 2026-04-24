@@ -61,7 +61,29 @@ def constructBayesNet(gameState: hunters.GameState):
     variableDomainsDict = {}
 
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    # populate variables
+    variables = [PAC, GHOST0, GHOST1, OBS0, OBS1]
+    # populate edges
+    edges = [(GHOST0, OBS0), (PAC, OBS0), (PAC, OBS1), (GHOST1, OBS1)]
+
+    # fill domains for positions
+    possiblePos = []
+    for x in range(0, X_RANGE):
+        for y in range(0, Y_RANGE):
+            possiblePos.append((x, y)) # all possible tuples in the grid
+    
+    # fill domains for observations
+    possibleObsVals = []
+    for x in range(0, (X_RANGE - 1) + (Y_RANGE - 1) + MAX_NOISE + 1): # max manhattan distance + max noise + 1 becuase of range indexing
+        possibleObsVals.append(x)
+
+    # set variable domains
+    variableDomainsDict[PAC] = possiblePos
+    variableDomainsDict[GHOST0] = possiblePos
+    variableDomainsDict[GHOST1] = possiblePos
+    variableDomainsDict[OBS0] = possibleObsVals
+    variableDomainsDict[OBS1] = possibleObsVals
+
     "*** END YOUR CODE HERE ***"
 
     net = bn.constructEmptyBayesNet(variables, edges, variableDomainsDict)
@@ -323,7 +345,11 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        if self.total() == 0: # can't devide by 0, return in this case
+            return
+
+        for key in self.keys(): # divide each value by the total to normalize
+            self[key] = self[key]/self.total()
         "*** END YOUR CODE HERE ***"
 
     def sample(self):
@@ -348,7 +374,12 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        randomPoint = random.random() * self.total() # get random float in range of total
+        x = 0 # initialize a var to sweep through the range of total
+        for key, value in self.items(): # let x increment by the value of each key, giving each key a proportional chunck of the range
+            x += value
+            if randomPoint <= x: # when x surpasses the random point, return the corresponding key
+                return key
         "*** END YOUR CODE HERE ***"
 
 
@@ -423,7 +454,16 @@ class InferenceModule:
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        if ghostPosition == jailPosition: # ghost in jail, prob is 1 that noisyDistance is None, and otherwise prob is 0
+            if noisyDistance is None:
+                return 1
+            else:
+                return 0
+        elif noisyDistance is None: # ghost not in jail but no noisy distance, can't happen so prob is 0
+            return 0
+
+        actualDist = manhattanDistance(pacmanPosition, ghostPosition) # get the actual distance
+        return busters.getObservationProbability(noisyDistance, actualDist) # calculate and return the probability of the noisy distance given the actual distance
         "*** END YOUR CODE HERE ***"
 
     def setGhostPosition(self, gameState, ghostPosition, index):
