@@ -9,3 +9,8 @@ The variables that are conditioned in the returned factor are the same as the pr
 
 
 QS7.1: 
+
+The main reason Pacman's belief at a square is updated by summing over all previous ghost positions: B'(newPos) = sum over oldPos of P(newPos | oldPos) * B(oldPos) after time passes. 
+So a square gets lighter when a lot of likely old positions can move into it, or when the ghost's movement model prefers moving there. 
+For the GoSouthAgent, the transition model gives extra probability to moving south, so lower squares become more likely over time. 
+Squares get darker when fewer likely positions can reach them, when walls block movement into them, or when the ghost policy makes movement toward them less likely.
