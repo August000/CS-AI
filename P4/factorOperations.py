@@ -102,7 +102,33 @@ def joinFactors(factors: List[Factor]):
 
 
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    factorList = list(factors) # convert to list
+
+    # collect the unconditioned and conditioned variables respecively from all of the factors
+    unconVars = set() # init to empty set 
+    for factor in factorList:
+        unconVars |= set(factor.unconditionedVariables()) # union of the sets of unconditioned variables from each factor
+
+    conVars = set() # sim for conditioned variables
+    for factor in factorList:
+        conVars |= set(factor.conditionedVariables())
+
+    # if a var is in both sets, it must be uncoditionsoned, so remove it from the conditioned set
+    conVars -= unconVars
+
+    # all factors come from same BayesNet, so they have same domains
+    varDomainsDict = factorList[0].variableDomainsDict()
+    #create joined factor
+    joinedFactor = Factor(unconVars, conVars, varDomainsDict)
+
+    # fill every row in the joined factor with its probability
+    for assDict in joinedFactor.getAllPossibleAssignmentDicts():
+        prob = 1
+        for factor in factorList:
+            prob *= factor.getProbability(assDict)
+        joinedFactor.setProbability(assDict, prob)
+
+    return joinedFactor
     "*** END YOUR CODE HERE ***"
 
 ########### ########### ###########
@@ -153,7 +179,26 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # new factor has all the same variables except the eliminated one
+        unconVars = set(factor.unconditionedVariables())
+        unconVars.remove(eliminationVariable)
+        conVars = set(factor.conditionedVariables())
+
+        varDomainsDict = factor.variableDomainsDict() # get the variable domains dict
+
+        eliminatedFactor = Factor(unconVars, conVars, varDomainsDict)  # create new eleiminated factor
+
+        # for each row in the new factor, sum over all possible values of the eliminated variable from the old factor
+        for assDict in eliminatedFactor.getAllPossibleAssignmentDicts():
+            prob = 0
+            for elimValue in varDomainsDict[eliminationVariable]: # loop through all possible values of the eliminated variable and
+                oldAssDict = assDict.copy()
+                oldAssDict[eliminationVariable] = elimValue
+                prob += factor.getProbability(oldAssDict) # add prob of old assigemtn for each value of the eliminated variable to get the prob of the new assignment
+
+            eliminatedFactor.setProbability(assDict, prob)
+
+        return eliminatedFactor
         "*** END YOUR CODE HERE ***"
 
     return eliminate
