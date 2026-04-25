@@ -17,3 +17,4 @@ venv/
 # Test / coverage artifacts
 .pytest_cache/
 .coverage
+.claude
